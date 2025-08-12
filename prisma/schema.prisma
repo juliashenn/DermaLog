@@ -51,6 +51,8 @@ model User {
   sessions      Session[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+  entries       Entry[]
+  products      UserProduct[]  
  
   @@map("users")
 }
@@ -62,4 +64,80 @@ model VerificationToken {
  
   @@unique([identifier, token])
   @@map("verification_tokens")
+}
+
+model Entry {
+  id         String        @id @default(cuid())
+  userId     String
+  user       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date       DateTime      @default(now())
+  products   EntryProduct[]
+  breakouts  Breakout[]
+  foods      FoodEaten[]
+  
+  @@map("entries")
+}
+
+model Product {
+  id       String         @id @default(cuid())
+  name     String
+  users    UserProduct[]  // many-to-many with User
+  entries  EntryProduct[] // many-to-many with Entry
+}
+
+enum ProductStatus {
+  CURRENT
+  TRIED
+  WANT_TO_TRY
+}
+
+model UserProduct {
+  id        String        @id @default(cuid())
+  userId    String
+  productId String
+  status    ProductStatus @default(CURRENT)
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
+}
+
+model EntryProduct {
+  id        String    @id @default(cuid())
+  entryId   String
+  productId String
+  area      String?
+  timeOfDay TimeOfDay
+
+  entry   Entry   @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([entryId, productId])
+}
+
+model Breakout {
+  id         String   @id @default(cuid())
+  entryId    String
+  entry      Entry    @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  label      String   // e.g., "whitehead", "cyst"
+  x          Float
+  y          Float
+
+  @@map("breakouts")
+}
+
+model FoodEaten {
+  id         String   @id @default(cuid())
+  entryId    String
+  entry      Entry    @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  foodItem   String
+  notes      String?
+
+  @@map("foods_eaten")
+}
+
+enum TimeOfDay {
+  am
+  pm
 }

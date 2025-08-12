@@ -17,12 +17,12 @@ import { Calendar, Home, BookOpen, Search, Settings, FilePlus, Inbox, Sparkles, 
 import { Separator } from "@/components/ui/separator";
 
 const items = [
-  { title: "Dashboard", url: "#", icon: Home },
-  { title: "New Entry", url: "#", icon: FilePlus },
-  { title: "My Routine", url: "#", icon: SoapDispenserDroplet },
-  { title: "Recommendations", url: "#", icon: ChartLine },
-  { title: "Handbook", url: "#", icon: BookOpen },
-  { title: "Settings", url: "#", icon: Settings},
+  { title: "Dashboard", url: "/dashboard", icon: Home },
+  { title: "New Entry", url: "/dashboard/newEntry", icon: FilePlus },
+  { title: "My Routine", url: "/dashboard/routine", icon: SoapDispenserDroplet },
+  { title: "Recommendations", url: "/dashboard/recommendations", icon: ChartLine },
+  { title: "Handbook", url: "/dashboard/handbook", icon: BookOpen },
+  { title: "Settings", url: "/dashboard/settings", icon: Settings},
 ];
 
 export function AppSidebar() {

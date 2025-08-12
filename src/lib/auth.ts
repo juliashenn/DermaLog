@@ -5,11 +5,9 @@ import { redirect } from "next/navigation";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 
-import { PrismaClient } from "@prisma/client";
-
 import bcrypt from "bcryptjs";
 
-const prisma = new PrismaClient()
+import { prisma } from "@/lib/prisma";
 
 export const authConfig: NextAuthOptions = {
   providers: [
@@ -61,4 +59,12 @@ export async function redirectIfAuth() {
   const session = await getServerSession(authConfig);
   if (session) redirect("/dashboard");
   return null;
+}
+
+export async function getUserIdByEmail(email: string) {
+  const user = await prisma.user.findUnique({
+    where: { email },
+    select: { id: true },
+  });
+  return user?.id || null;
 }
